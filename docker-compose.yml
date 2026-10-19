@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: poker-postgres
+    environment:
+      POSTGRES_DB: poker-api
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - poker-postgres-data:/var/lib/postgresql/data
+
+volumes:
+  poker-postgres-data:
