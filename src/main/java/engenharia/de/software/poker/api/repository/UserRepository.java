@@ -1,11 +1,12 @@
 package engenharia.de.software.poker.api.repository;
 
-import engenharia.de.software.poker.api.model.entity.Usuario;
-import org.springframework.data.jpa.*;
+import engenharia.de.software.poker.api.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.*;
 import java.util.Optional;
 
-public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
-    Opitional<Usuario> findByEmail(String email);
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByEma(Long id);
+    Optional<User> findByUserName(String name);
+
+    boolean existsByUserName(String userName);
 }
