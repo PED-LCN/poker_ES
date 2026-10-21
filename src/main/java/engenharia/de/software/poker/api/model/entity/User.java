@@ -35,5 +35,6 @@ public class User {
 
     @NotBlank
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private UserRole role;
 }
