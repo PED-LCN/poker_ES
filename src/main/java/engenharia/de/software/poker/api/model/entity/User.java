@@ -1,8 +1,9 @@
 package engenharia.de.software.poker.api.model.entity;
 
-import engenharia.de.software.poker.api.model.UserRole;
+import engenharia.de.software.poker.api.model.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -21,20 +22,22 @@ public class User {
 
     @NotBlank
     @Size(max =150)
-    @Column(nullable = false, length = 150)
+    @Column(name = "username", nullable = false, length = 150)
     private String userName;
 
     @NotBlank
     @Size(max = 255)
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String email;
 
     @NotBlank
-    @Column(nullable = false)
+    @Column(name = "senha", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private String password;
 
-    @NotBlank
-    @Column(nullable = false)
+    @NotNull
+    @Column(name = "role", nullable = false, length = 30)
     @Enumerated(EnumType.STRING)
     private UserRole role;
 }
