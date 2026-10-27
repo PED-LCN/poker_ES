@@ -42,7 +42,7 @@ Na raiz do projeto, abra outro terminal e execute:
 ./mvnw.cmd spring-boot:run
 ```
 
-A primeira execução pode levar alguns minutos enquanto Maven baixa as dependências. Quando o servidor iniciar, a API ficará disponível em `http://localhost:8080`.
+A primeira execução pode levar alguns minutos enquanto Maven baixa as dependências. Quando o servidor iniciar, a API ficará disponível em `http://localhost:8081`.
 
 Para encerrar, pressione `Ctrl+C` no terminal da aplicação. O banco pode continuar ativo para a próxima execução.
 
@@ -51,14 +51,14 @@ Para encerrar, pressione `Ctrl+C` no terminal da aplicação. O banco pode conti
 O endpoint implementado para testar o cadastro é:
 
 ```http
-POST http://localhost:8080/poker/cadastro
+POST http://localhost:8081/poker/cadastro
 Content-Type: application/json
 ```
 
 Exemplo com `curl` (PowerShell ou outro terminal):
 
 ```powershell
-curl.exe -X POST http://localhost:8080/poker/cadastro `
+curl.exe -X POST http://localhost:8081/poker/cadastro `
   -H "Content-Type: application/json" `
   -d '{"username":"jogador1","email":"jogador1@example.com","password":"senha1234"}'
 ```
