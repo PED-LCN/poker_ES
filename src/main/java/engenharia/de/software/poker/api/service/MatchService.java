@@ -2,6 +2,7 @@ package engenharia.de.software.poker.api.service;
 
 import engenharia.de.software.poker.api.dto.match.ApiResponse;
 import engenharia.de.software.poker.api.dto.match.MatchEntryResponse;
+import engenharia.de.software.poker.api.dto.match.MatchListResponse;
 import engenharia.de.software.poker.api.exception.*;
 import engenharia.de.software.poker.api.model.entity.Match;
 import engenharia.de.software.poker.api.model.entity.MatchState;
@@ -12,6 +13,8 @@ import engenharia.de.software.poker.api.repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -70,5 +73,14 @@ public class MatchService {
         Match savedMatch = matchRepository.save(match);
         cardDistributionService.createAndDistributeInitialRound(savedMatch); // <-- Aciona a US13 ao iniciar a partida
         return new ApiResponse(true, "Match started and cards distributed successfully.");
+    }
+
+    
+    @Transactional(readOnly = true)
+    public List<MatchListResponse> listarPartidasDisponiveis() {
+        List<Match> matches = matchRepository.findByState(MatchState.WAITING_PLAYERS);
+        return matches.stream()
+                .map(MatchListResponse::fromEntity)
+                .toList();
     }
 }
