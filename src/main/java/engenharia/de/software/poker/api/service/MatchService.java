@@ -10,6 +10,7 @@ import engenharia.de.software.poker.api.model.entity.Player;
 import engenharia.de.software.poker.api.model.entity.PokerTable;
 import engenharia.de.software.poker.api.repository.MatchRepository;
 import engenharia.de.software.poker.api.repository.PlayerRepository;
+import engenharia.de.software.poker.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,11 +23,12 @@ public class MatchService {
 
     private final MatchRepository matchRepository;
     private final PlayerRepository playerRepository;
+    private final UserRepository userRepository;
     private final CardDistributionService cardDistributionService;
 
     // Implementação da US10 - Entrada em uma partida
     @Transactional
-    public MatchEntryResponse joinMatch(Long matchId, Long playerId) {
+    public MatchEntryResponse joinMatch(Long matchId, Long userId) {
         Match match = matchRepository.findById(matchId)
                 .orElseThrow(() -> new ResourceNotFoundException("Match not found."));
 
@@ -34,8 +36,12 @@ public class MatchService {
             throw new MatchAlreadyStartedException("Cannot join. The match has already started or finished.");
         }
 
-        Player player = playerRepository.findById(playerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Player not found."));
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
+        if (playerRepository.existsByMatchIdAndUserId(matchId, userId)) {
+            throw new InvalidMatchStateException("User has already joined this match.");
+        }
 
         PokerTable table = match.getPokerTable();
 
@@ -43,10 +49,14 @@ public class MatchService {
             throw new TableFullException("Cannot join. The table is full.");
         }
 
+        Player player = new Player();
+        player.setUser(user);
+        player.setMatch(match);
+        player = playerRepository.save(player);
         table.addPlayer(player);
         matchRepository.save(match);
 
-        return new MatchEntryResponse(true, "Player successfully joined the match.", matchId, playerId);
+        return new MatchEntryResponse(true, "Player successfully joined the match.", matchId, player.getId());
     }
 
     // Implementação da US12 - Início de uma partida
@@ -59,7 +69,10 @@ public class MatchService {
             throw new InvalidMatchStateException("Match is already in progress or finished.");
         }
 
-        if (!match.getCreator().getId().equals(requestingPlayerId)) {
+        if (match.getCreator() == null
+                || !match.getCreator().getId().equals(requestingPlayerId)
+                || match.getCreator().getMatch() == null
+                || !match.getCreator().getMatch().getId().equals(matchId)) {
             throw new UnauthorizedActionException("Only the match creator can start the match.");
         }
 
@@ -80,6 +93,7 @@ public class MatchService {
     public List<MatchListResponse> listarPartidasDisponiveis() {
         List<Match> matches = matchRepository.findByState(MatchState.WAITING_PLAYERS);
         return matches.stream()
+                .filter(match -> match.getPokerTable() != null && match.getPokerTable().isAvailable())
                 .map(MatchListResponse::fromEntity)
                 .toList();
     }
