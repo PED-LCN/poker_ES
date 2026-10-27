@@ -19,6 +19,7 @@ public class MatchService {
 
     private final MatchRepository matchRepository;
     private final PlayerRepository playerRepository;
+    private final CardDistributionService cardDistributionService;
 
     // Implementação da US10 - Entrada em uma partida
     @Transactional
@@ -66,8 +67,8 @@ public class MatchService {
         }
 
         match.start();
-        matchRepository.save(match);
-
-        return new ApiResponse(true, "Match started successfully.");
+        Match savedMatch = matchRepository.save(match);
+        cardDistributionService.createAndDistributeInitialRound(savedMatch); // <-- Aciona a US13 ao iniciar a partida
+        return new ApiResponse(true, "Match started and cards distributed successfully.");
     }
 }
