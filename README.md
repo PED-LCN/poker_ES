@@ -4,14 +4,15 @@ API REST para cadastro de usuários e operações iniciais de partidas de pôque
 
 ## Requisitos
 
-- Java 21
-- Docker Desktop com Docker Compose, para executar o PostgreSQL localmente
+- Java 21 (`java -version` deve mostrar a versão 21)
+- Windows ou macOS: Docker Desktop com Docker Compose; Linux: Docker Engine com o plugin Docker Compose
+- Terminal na pasta raiz do repositório, onde estão `docker-compose.yml` e os scripts do Maven Wrapper
 
 ## Iniciar o banco de dados
 
-No terminal, na pasta raiz do projeto (onde está `docker-compose.yml`), execute:
+Inicie o Docker Desktop (Windows/macOS) ou o serviço Docker (Linux). Na pasta raiz do projeto, execute o mesmo comando em qualquer sistema:
 
-```powershell
+```sh
 docker compose up -d
 ```
 
@@ -28,7 +29,7 @@ A aplicação usa essa configuração em `src/main/resources/application.yaml`. 
 
 Para parar o banco sem apagar os dados:
 
-```powershell
+```sh
 docker compose down
 ```
 
@@ -36,13 +37,21 @@ Os dados ficam em um volume Docker. Para apagar o banco local e todos os seus da
 
 ## Executar a API
 
-Na raiz do projeto, abra outro terminal e execute:
+Na raiz do projeto, abra outro terminal e execute o comando do seu sistema:
+
+**Windows (PowerShell):**
 
 ```powershell
-./mvnw.cmd spring-boot:run
+.\mvnw.cmd spring-boot:run
 ```
 
-A primeira execução pode levar alguns minutos enquanto Maven baixa as dependências. Quando o servidor iniciar, a API ficará disponível em `http://localhost:8081`.
+**Linux/macOS:**
+
+```sh
+sh ./mvnw spring-boot:run
+```
+
+Os scripts usam o Maven Wrapper do repositório; não é necessário instalar Maven separadamente. Se você já tiver Maven instalado, `mvn spring-boot:run` também funciona em qualquer sistema. A primeira execução pode levar alguns minutos enquanto as dependências são baixadas. Quando o servidor iniciar, a API ficará disponível em `http://localhost:8081`.
 
 Para encerrar, pressione `Ctrl+C` no terminal da aplicação. O banco pode continuar ativo para a próxima execução.
 
@@ -61,11 +70,19 @@ POST http://localhost:8081/poker/cadastro
 Content-Type: application/json
 ```
 
-Exemplo com `curl` (PowerShell ou outro terminal):
+**Windows (PowerShell):**
 
 ```powershell
-curl.exe -X POST http://localhost:8081/poker/cadastro `
-  -H "Content-Type: application/json" `
+$dados = @{ username = 'jogador1'; email = 'jogador1@example.com'; password = 'senha1234' }
+Invoke-RestMethod -Method Post -Uri 'http://localhost:8081/poker/cadastro' `
+  -ContentType 'application/json' -Body ($dados | ConvertTo-Json)
+```
+
+**Linux/macOS:**
+
+```sh
+curl -X POST http://localhost:8081/poker/cadastro \
+  -H 'Content-Type: application/json' \
   -d '{"username":"jogador1","email":"jogador1@example.com","password":"senha1234"}'
 ```
 
