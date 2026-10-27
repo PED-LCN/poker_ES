@@ -21,8 +21,9 @@ public class PokerRound {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "match_id", nullable = false)
-    private Long matchId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "match_id", nullable = false)
+    private Match match;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 30)
