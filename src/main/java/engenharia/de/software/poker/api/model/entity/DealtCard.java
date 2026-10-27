@@ -23,8 +23,8 @@ public class DealtCard {
     private PokerRound round;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "player_id", nullable = false)
+    private Player player;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "suit", nullable = false, length = 15)

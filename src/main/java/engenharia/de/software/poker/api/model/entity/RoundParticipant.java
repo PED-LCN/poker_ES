@@ -21,8 +21,8 @@ public class RoundParticipant {
     private PokerRound round;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "player_id", nullable = false)
+    private Player player;
 
     @Column(name = "seat_order", nullable = false)
     private int seatOrder;

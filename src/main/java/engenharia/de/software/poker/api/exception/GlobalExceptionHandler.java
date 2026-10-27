@@ -38,4 +38,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ApiResponse(false, ex.getMessage()));
     }
+    @ExceptionHandler(InvalidMatchStateException.class)
+    public ResponseEntity<ApiResponse> handleInvalidMatchState(InvalidMatchStateException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ApiResponse(false, ex.getMessage()));
+    }
 }
