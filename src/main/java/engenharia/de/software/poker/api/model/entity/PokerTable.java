@@ -1,6 +1,7 @@
 package engenharia.de.software.poker.api.model.entity;
 
 import engenharia.de.software.poker.api.exception.TableFullException;
+import engenharia.de.software.poker.api.exception.InvalidMatchStateException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,6 +40,11 @@ public class PokerTable {
     }
 
     public void addPlayer(Player player) {
+        if (players.stream().anyMatch(existing -> existing.getUser() != null
+                && player.getUser() != null
+                && existing.getUser().getId().equals(player.getUser().getId()))) {
+            throw new InvalidMatchStateException("User has already joined this table.");
+        }
         if (!isAvailable()) {
             throw new TableFullException("The table is already full.");
         }

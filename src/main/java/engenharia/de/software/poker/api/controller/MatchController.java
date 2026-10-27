@@ -18,13 +18,13 @@ public class MatchController {
     private final MatchService matchService;
 
     @PostMapping("/{idPartida}/entrar")
-    public ResponseEntity<MatchEntryResponse> joinMatch(@PathVariable("idPartida") Long matchId, @RequestParam Long playerId) {
-        MatchEntryResponse response = matchService.joinMatch(matchId, playerId);
+    public ResponseEntity<MatchEntryResponse> joinMatch(@PathVariable("idPartida") Long matchId, @RequestParam("idUsuario") Long userId) {
+        MatchEntryResponse response = matchService.joinMatch(matchId, userId);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/{idPartida}/iniciar")
-    public ResponseEntity<ApiResponse> startMatch(@PathVariable("idPartida") Long matchId, @RequestParam Long playerId) {
+    public ResponseEntity<ApiResponse> startMatch(@PathVariable("idPartida") Long matchId, @RequestParam("idJogador") Long playerId) {
         ApiResponse response = matchService.startMatch(matchId, playerId);
         return ResponseEntity.ok(response);
     }
